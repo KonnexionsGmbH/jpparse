@@ -156,34 +156,34 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[1]:c"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; 1}, &lt;&lt;"c"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'[]', &lt;&lt;"b"&gt;&gt;, 1}, &lt;&lt;"c"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[1-20]"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; {'-', 1, 20}}, &lt;&lt;"c"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'[]', &lt;&lt;"b"&gt;&gt;, {'-', 1, 20}}, &lt;&lt;"c"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[1,2,3]"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; [1,2,3]}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'[]', &lt;&lt;"b"&gt;&gt;, [1,2,3]}]}</tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{}:c"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', &lt;&lt;"b"&gt;&gt; '_'}, &lt;&lt;"c"&gt;&gt;]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, '_'}, &lt;&lt;"c"&gt;&gt;]}</tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{c}"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', &lt;&lt;"b"&gt;&gt; ,&lt;&lt;"c"&gt;&gt;}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, ,&lt;&lt;"c"&gt;&gt;}]}</tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[]:c"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><tt><big>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; '_'}, &lt;&lt;"c"&gt;&gt;]}</big></tt></td>
+          <td valign="top"><tt><big>{':', [&lt;&lt;"a"&gt;&gt;, {'[]', &lt;&lt;"b"&gt;&gt;, '_'}, &lt;&lt;"c"&gt;&gt;]}</big></tt></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"[]:c{$first-child$}:d"&gt;&gt;
@@ -207,25 +207,25 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', &lt;&lt;"b"&gt;&gt; [&lt;&lt;"c"&gt;&gt; d]}, &lt;&lt;"e"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, [&lt;&lt;"c"&gt;&gt; d]}, &lt;&lt;"e"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:c:$keys$"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; &lt;&lt;"c"&gt;&gt; '$keys$']}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, &lt;&lt;"c"&gt;&gt;, '$keys$']}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{$keys$}[1-2]"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; &lt;&lt;"b"&gt;&gt; {'[]',
-                {'{}',&lt;&lt;"b"&gt;&gt;'$keys$'}, {'-', 1, 2}}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, &lt;&lt;"b"&gt;&gt;, {'[]',
+                {'{}',&lt;&lt;"b"&gt;&gt;,'$keys$'}, {'-', 1, 2}}]}</tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[1-2]{}:c"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', {'[]', &lt;&lt;"b"&gt;&gt; {'-', 1,
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', {'[]', &lt;&lt;"b"&gt;&gt;, {'-', 1,
                 2}}, '_'}, &lt;&lt;"c"&gt;&gt;]}
               </tt></big></td>
         </tr>
