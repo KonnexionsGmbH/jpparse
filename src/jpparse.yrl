@@ -12,6 +12,7 @@ Nonterminals
  array
  object
  oabody
+ paleaf
 .
 
 Terminals
@@ -23,6 +24,7 @@ Terminals
  ']'
  '}'
  '-'
+ '$'
 .
 
 Rootsymbol jsonpath.
@@ -35,21 +37,25 @@ jsonpath -> jsonpathlist                    : {':', '$1'}.
 jsonpathlist -> jelement                    : ['$1'].
 jsonpathlist -> jelement ':' jsonpathlist   : ['$1' | '$3'].
 
-jelement -> STRING                          : unwrap('$1').
+jelement -> paleaf                          : '$1'.
 jelement -> array                           : '$1'.
 jelement -> object                          : '$1'.
 
 array -> '[' oabody ']'                     : {'[]', '_', '$2'}.
-array -> STRING '[' ']'                     : {'[]', unwrap('$1'), '_'}.
-array -> STRING '[' oabody ']'              : {'[]', unwrap('$1'), '$3'}.
+array -> paleaf '[' ']'                     : {'[]', '$1', '_'}.
+array -> paleaf '[' oabody ']'              : {'[]', '$1', '$3'}.
 
 object -> '{' oabody '}'                    : {'{}', '_', '$2'}.
-object -> STRING '{' '}'                    : {'{}', unwrap('$1'), '_'}.
-object -> STRING '{' oabody '}'             : {'{}', unwrap('$1'), '$3'}.
+object -> paleaf '{' '}'                    : {'{}', '$1', '_'}.
+object -> paleaf '{' oabody '}'             : {'{}', '$1', '$3'}.
 
-oabody -> STRING                            : [unwrap('$1')].
-oabody -> STRING '-' STRING                 : [{'-', unwrap('$1'), unwrap('$3')}].
-oabody -> STRING ',' oabody                 : [unwrap('$1') | '$3'].
+oabody -> paleaf                            : ['$1'].
+oabody -> paleaf '-' paleaf                 : [{'-', '$1', '$3'}].
+oabody -> paleaf ',' oabody                 : ['$1' | '$3'].
+
+paleaf -> STRING                            : unwrap('$1').
+paleaf -> '$' STRING '$'                    : {'$', unwrap('$2')}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -131,7 +137,8 @@ parse_test() ->
     {ShowParseTree, Tests} =
         case file:consult(filename:join([Cwd, "..", "test", "test.txt"])) of
             {ok, [show_parse_tree, T]}  -> {true, T};
-            {ok, [T]}                   -> {true, T};
+            {ok, [_, T]}                -> {false, T};
+            {ok, [T]}                   -> {false, T};
             {error, Error}              -> ?assertEqual(ok, Error)
         end,
     ?debugFmt("Test result ~p parse tree"
@@ -144,25 +151,35 @@ test_parse(N, ShowParseTree, [{Test,Target}|Tests]) when is_binary(Test) ->
 test_parse(N, ShowParseTree, [{Test,Target}|Tests]) ->
     ?debugFmt("[~p]----------------------------------------",[N]),
     ?debugFmt("~ts", [Test]),
-    {ok,Tokens,EndLine} = t_tokenize(Test),
-    {ok, PTree} = t_parse(Tokens, EndLine),
+    {Tokens,EndLine} = case t_tokenize(Test) of
+        {ok,T,E} -> {T,E};
+        {error, Error} ->
+            ?debugFmt("Tokenize Error ~p", [Error]),
+            ?assertEqual(ok, tokenize_error)
+    end,
+    PTree = case t_parse(Tokens, EndLine) of
+        {ok, PT} -> PT;
+        {error, {Line, PError}} ->
+            ?debugFmt("Parse Error at ~p : ~s", [Line, PError]),
+            ?debugFmt("Tokens ~p:~p", [EndLine,Tokens]),
+            ?assertEqual(ok, parsing_error)
+    end,
     ?assertEqual(Target, PTree),
-    ?debugFmt("~p", [PTree]),
+    if ShowParseTree -> ?debugFmt("~p", [PTree]); true -> ok end,
     ?debugFmt("[~p]----------------------------------------",[N]),
     test_parse(N+1, ShowParseTree, Tests).
 
 t_tokenize(Test) ->
     case jsonpath_lex:string(Test) of
         {ok,Tokens,EndLine} -> {ok,Tokens,EndLine};
-        ErrorInfo ->
-            ?assertEqual(ok, jsonpath_lex:format_error(ErrorInfo))
+        ErrorInfo -> {error, jsonpath_lex:format_error(ErrorInfo)}
     end.
 
 t_parse(Tokens, EndLine) ->
     case jpparse:parse(Tokens) of
         {ok, PTree} -> {ok, PTree};
         {error, {Line, Module, Message}} ->
-            ?assertEqual(ok, {Line, Module:format_error(Message), {Tokens,EndLine}})
+            {error, {Line, lists:flatten(Module:format_error(Message))}}
     end.
 
 %%-----------------------------------------------------------------------------
