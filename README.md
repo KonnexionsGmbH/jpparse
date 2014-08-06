@@ -210,9 +210,9 @@ From the moment a path expression contains an operator who returns a list, resul
               </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt>a:\b:$keys$
+          <td valign="top"><big><tt>a:c:$keys$
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [a, b, '$keys$']}
+          <td valign="top"><big><tt>{':', [a, c, '$keys$']}
               </tt></big></td>
         </tr>
         <tr>
