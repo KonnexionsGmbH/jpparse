@@ -201,7 +201,7 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"[]:c{$firstChild$}:d"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '\_', []}, {'{}', &lt;&lt;"c"&gt;&gt;,
+          <td valign="top"><big><tt>{':', [{'[]', '_', []}, {'{}', &lt;&lt;"c"&gt;&gt;,
                 {'$',&lt;&lt;""firstChild"&gt;&gt;}}, &lt;&lt;"d"&gt;&gt;]}
               </tt></big></td>
         </tr>
@@ -221,13 +221,13 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"[1]:d"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '\_', 1}, &lt;&lt;"d"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [{'[]', '_', 1}, &lt;&lt;"d"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', '\_', [&lt;&lt;"c"&gt;&gt;, &lt;&lt;"d"&gt;&gt;]},&lt;&lt;"e"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [{'{}', '_', [&lt;&lt;"c"&gt;&gt;, &lt;&lt;"d"&gt;&gt;]},&lt;&lt;"e"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
