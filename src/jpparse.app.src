@@ -1,0 +1,13 @@
+{application, jpparse,
+ [
+  {description, "JSON path parser and compiler"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  sqlparse
+                 ]},
+  {mod, { jpparse_app, []}},
+  {env, []}
+ ]}.
