@@ -115,9 +115,17 @@ path expression | parsed form
 1> jpparse:parsetree("a:b").
 {ok,{{':',[<<"a">>,<<"b">>]},
      [{'STRING',1,"a"},{':',1},{'STRING',1,"b"}]}}
-2> jpparse:parsetree("a:b[1-2").
-{parse_error,{1,
-              ["syntax error before: ",[]],
+2> jpparse:parsetree("a:b{1-2"). 
+{parse_error,{1,"syntax error before: ",
+              [{'STRING',1,"a"},
+               {':',1},
+               {'STRING',1,"b"},
+               {'{',1},
+               {'STRING',1,"1"},
+               {'-',1},
+               {'STRING',1,"2"}]}}
+3> jpparse:parsetree("a:b[1-2").
+{parse_error,{1,"syntax error before: ",
               [{'STRING',1,"a"},
                {':',1},
                {'STRING',1,"b"},
@@ -125,7 +133,7 @@ path expression | parsed form
                {'STRING',1,"1"},
                {'-',1},
                {'STRING',1,"2"}]}}
-3> jpparse:parsetree("a:b[1-2]").
+4> jpparse:parsetree("a:b[1-2]").
 {ok,{{':',[<<"a">>,{'[]',<<"b">>,[{'-',1,2}]}]},
      [{'STRING',1,"a"},
       {':',1},
@@ -135,7 +143,7 @@ path expression | parsed form
       {'-',1},
       {'STRING',1,"2"},
       {']',1}]}}
-4> jpparse:parsetree("a:b[1,1-2]").
+5> jpparse:parsetree("a:b[1,1-2]").
 {ok,{{':',[<<"a">>,{'[]',<<"b">>,[1,{'-',1,2}]}]},
      [{'STRING',1,"a"},
       {':',1},
