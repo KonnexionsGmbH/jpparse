@@ -115,7 +115,7 @@ parsetree(JPath) when is_list(JPath) ->
             case jpparse:parse(Toks) of
                 {ok, PTree} -> {ok, {PTree, Toks}};
                 {error, {Line, Module, Message}} ->
-                    {parse_error, {Line, Module:format_error(Message), Toks}}
+                    {parse_error, {Line, lists:flatten(Module:format_error(Message)), Toks}}
             end;
         LexErrorInfo -> {lex_error, jsonpath_lex:format_error(LexErrorInfo)}
     end;
