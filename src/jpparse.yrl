@@ -41,13 +41,21 @@ jelement -> paleaf                          : '$1'.
 jelement -> array                           : '$1'.
 jelement -> object                          : '$1'.
 
+array -> '[' ']'                            : {'[]', '_', []}.
 array -> '[' oabody ']'                     : {'[]', '_', '$2'}.
-array -> paleaf '[' ']'                     : {'[]', '$1', '_'}.
+array -> paleaf '[' ']'                     : {'[]', '$1', []}.
 array -> paleaf '[' oabody ']'              : {'[]', '$1', '$3'}.
+array -> array '[' oabody ']'               : {'[]', '$1', '$3'}.
+array -> object '[' ']'                     : {'[]', '$1', []}.
+array -> object '[' oabody ']'              : {'[]', '$1', '$3'}.
 
+object -> '{' '}'                           : {'{}', '_', []}.
 object -> '{' oabody '}'                    : {'{}', '_', '$2'}.
-object -> paleaf '{' '}'                    : {'{}', '$1', '_'}.
+object -> paleaf '{' '}'                    : {'{}', '$1', []}.
 object -> paleaf '{' oabody '}'             : {'{}', '$1', '$3'}.
+object -> array '{' '}'                     : {'{}', '$1', []}.
+object -> array '{' oabody '}'              : {'{}', '$1', '$3'}.
+object -> object '{' oabody '}'             : {'{}', '$1', '$3'}.
 
 oabody -> paleaf                            : ['$1'].
 oabody -> paleaf '-' paleaf                 : [{'-', '$1', '$3'}].
@@ -157,7 +165,7 @@ test_parse(N, ShowParseTree, [{Test,Target}|Tests]) ->
             ?debugFmt("Tokenize Error ~p", [Error]),
             ?assertEqual(ok, tokenize_error)
     end,
-    PTree = case t_parse(Tokens, EndLine) of
+    PTree = case t_parse(Tokens) of
         {ok, PT} -> PT;
         {error, {Line, PError}} ->
             ?debugFmt("Parse Error at ~p : ~s", [Line, PError]),
@@ -166,7 +174,6 @@ test_parse(N, ShowParseTree, [{Test,Target}|Tests]) ->
     end,
     ?assertEqual(Target, PTree),
     if ShowParseTree -> ?debugFmt("~p", [PTree]); true -> ok end,
-    ?debugFmt("[~p]----------------------------------------",[N]),
     test_parse(N+1, ShowParseTree, Tests).
 
 t_tokenize(Test) ->
@@ -175,7 +182,7 @@ t_tokenize(Test) ->
         ErrorInfo -> {error, jsonpath_lex:format_error(ErrorInfo)}
     end.
 
-t_parse(Tokens, EndLine) ->
+t_parse(Tokens) ->
     case jpparse:parse(Tokens) of
         {ok, PTree} -> {ok, PTree};
         {error, {Line, Module, Message}} ->
