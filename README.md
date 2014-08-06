@@ -188,7 +188,7 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"[]:c{$first-child$}:d"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '_', '_'}, {'{}', &lt;&lt;"c"&gt;&gt;
+          <td valign="top"><big><tt>{':', [{'[]', '_', '_'}, {'{}', &lt;&lt;"c"&gt;&gt;,
                 '$first-child$'}, &lt;&lt;"d"&gt;&gt;]}
               </tt></big></td>
         </tr>
