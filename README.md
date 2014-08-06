@@ -48,90 +48,22 @@ Json Path Parser parses a Json path into an abstract syntax tree, ready to be in
 ####"single value / list of values as result" operator correspondence table
 From the moment a path expression contains an operator who returns a list, result will be a list, even if only a single object matches.
 
-<table>
-      <tbody>
-        <tr>
-          <td valign="top"><big><tt>a:b when b is list
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>a:b when b is object
-              </tt></big></td>
-          <td valign="top"><big><tt>Single (object)
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>a:b when b is neither list or object
-              </tt></big></td>
-          <td valign="top"><big><tt>Single (value)
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>a[]
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>a[1]
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>a[1-2]
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>a[1,2]
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>b{}
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>b{prop}
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>b{$keys$} or b:$keys$</tt></big></td>
-          <td valign="top"><big><tt>List</tt></big></td>
-        </tr>
-         <tr>
-          <td valign="top"><big><tt>b{$values$} or b:$values$</tt></big></td>
-          <td valign="top"><big><tt>List</tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>b{$first-child$}
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>b:$first-child$
-              </tt></big></td>
-          <td valign="top"><big><tt>Single
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt>b{prop<<"a">>propb}
-              </tt></big></td>
-          <td valign="top"><big><tt>List
-              </tt></big></td>
-        </tr>
-      </tbody>
-    </table>
+input | output
+--- | ---
+`a:b` when `b` is list | List 
+`a:b` when `b` is object | Single (object) 
+`a:b` when `b` is neither list or object | Single (value) 
+`a[]` | List 
+`a[1]` | List 
+`a[1-2]` | List 
+`a[1,2]` | List 
+`b{}` | List 
+`b{prop}` | List 
+`b{$keys$}` or `b:$keys$` | List
+`b{$values$}` or `b:$values$` | List
+`b{$first_child$}` | List 
+`b:$first_child$` | Single 
+`b{prop>propb}` | List 
 
 
 ###For the parsed form expression:
