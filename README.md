@@ -154,79 +154,79 @@ From the moment a path expression contains an operator who returns a list, resul
           </th>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b[1]:c">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b[1]:c"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> {'[]', <<"b">> 1}, <<"c">>]}
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt><<"a:b[1-20]">>
-              </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> {'[]', <<"b">> {'-', 1, 20}}, <<"c">>]}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; 1}, &lt;&lt;"c"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b[1,2,3]">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b[1-20]"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> {'[]', <<"b">> [1,2,3]}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; {'-', 1, 20}}, &lt;&lt;"c"&gt;&gt;]}
+              </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b{}:c">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b[1,2,3]"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> {'{}', <<"b">> '_'}, <<"c">>]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; [1,2,3]}]}</tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b{c}">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b{}:c"&gt;&gt;
+              </tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', &lt;&lt;"b"&gt;&gt; '_'}, &lt;&lt;"c"&gt;&gt;]}</tt></big></td>
+        </tr>
+        <tr>
+          <td valign="top"><big><tt>&lt;&lt;"a:b{c}"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> {'{}', <<"b">> c}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', &lt;&lt;"b"&gt;&gt; c}]}</tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b[]:c">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b[]:c"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><tt><big>{':', [<<"a">> {'[]', <<"b">> '_'}, <<"c">>]}</big></tt></td>
+          <td valign="top"><tt><big>{':', [&lt;&lt;"a"&gt;&gt; {'[]', &lt;&lt;"b"&gt;&gt; '_'}, &lt;&lt;"c"&gt;&gt;]}</big></tt></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"[]:c{$first-child$}:d">>
+          <td valign="top"><big><tt>&lt;&lt;"[]:c{$first-child$}:d"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '_', '_'}, {'{}', <<"c">>
-                '$first-child$'}, <<"d">>]}
+          <td valign="top"><big><tt>{':', [{'[]', '_', '_'}, {'{}', &lt;&lt;"c"&gt;&gt;
+                '$first-child$'}, &lt;&lt;"d"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"[1]:d">>
+          <td valign="top"><big><tt>&lt;&lt;"[1]:d"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '_', 1}, <<"d">>]}
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt><<"{c,d}:e">>
-              </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', '_', [<<"c">> d]}]}
+          <td valign="top"><big><tt>{':', [{'[]', '_', 1}, &lt;&lt;"d"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b{c,d}:e">>
+          <td valign="top"><big><tt>&lt;&lt;"{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', <<"b">> [<<"c">> d]}, e]}
-              </tt></big></td>
-        </tr>
-        <tr>
-          <td valign="top"><big><tt><<"a:c:$keys$">>
-              </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> <<"c">> '$keys$']}
+          <td valign="top"><big><tt>{':', [{'{}', '_', [&lt;&lt;"c"&gt;&gt; d]}]}
               </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b{$keys$}[1-2]">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b{c,d}:e"&gt;&gt;
+              </tt></big></td>
+          <td valign="top"><big><tt>{':', [{'{}', &lt;&lt;"b"&gt;&gt; [&lt;&lt;"c"&gt;&gt; d]}, e]}
+              </tt></big></td>
+        </tr>
+        <tr>
+          <td valign="top"><big><tt>&lt;&lt;"a:c:$keys$"&gt;&gt;
+              </tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; &lt;&lt;"c"&gt;&gt; '$keys$']}
+              </tt></big></td>
+        </tr>
+        <tr>
+          <td valign="top"><big><tt>&lt;&lt;"a:b{$keys$}[1-2]"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> <<"b">> {'[]',
-                {'{}',<<"b">>'$keys$'}, {'-', 1, 2}}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; &lt;&lt;"b"&gt;&gt; {'[]',
+                {'{}',&lt;&lt;"b"&gt;&gt;'$keys$'}, {'-', 1, 2}}]}</tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt><<"a:b[1-2]{}:c">>
+          <td valign="top"><big><tt>&lt;&lt;"a:b[1-2]{}:c"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [<<"a">> {'{}', {'[]', <<"b">> {'-', 1,
-                2}}, '_'}, <<"c">>]}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', {'[]', &lt;&lt;"b"&gt;&gt; {'-', 1,
+                2}}, '_'}, &lt;&lt;"c"&gt;&gt;]}
               </tt></big></td>
         </tr>
       </tbody>
