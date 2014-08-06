@@ -178,7 +178,7 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{c}"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', &lt;&lt;"b"&gt;&gt; c}]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt; {'{}', &lt;&lt;"b"&gt;&gt; ,&lt;&lt;"c"&gt;&gt;}]}</tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[]:c"&gt;&gt;
@@ -201,13 +201,13 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', '_', [&lt;&lt;"c"&gt;&gt; d]}]}
+          <td valign="top"><big><tt>{':', [{'{}', '_', [&lt;&lt;"c"&gt;&gt;, &lt;&lt;"d"&gt;&gt;]},&lt;&lt;"e"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', &lt;&lt;"b"&gt;&gt; [&lt;&lt;"c"&gt;&gt; d]}, e]}
+          <td valign="top"><big><tt>{':', [{'{}', &lt;&lt;"b"&gt;&gt; [&lt;&lt;"c"&gt;&gt; d]}, &lt;&lt;"e"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
