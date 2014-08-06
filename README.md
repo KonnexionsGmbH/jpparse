@@ -207,7 +207,7 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, [&lt;&lt;"c"&gt;&gt; d]}, &lt;&lt;"e"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, [&lt;&lt;"c"&gt;&gt;, &lt;&lt;"d"&gt;&gt;]}, &lt;&lt;"e"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
