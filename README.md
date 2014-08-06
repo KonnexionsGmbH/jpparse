@@ -45,8 +45,7 @@ Json Path Parser parses a Json path into an abstract syntax tree, ready to be in
 ####"single value / list of values as result" operator correspondence table
 From the moment a path expression contains an operator who returns a list, result will be a list., even if only a single object matches.
 
-<table border="1" cellpadding="2" cellspacing="2" height="129"
-      width="697">
+<table>
       <tbody>
         <tr>
           <td valign="top"><big><tt>a:b when b is list
@@ -146,14 +145,13 @@ From the moment a path expression contains an operator who returns a list, resul
        
 
 ##jpparse grammar/syntax examples:
-<table border="1" cellpadding="2" cellspacing="2" height="299"
-      width="877">
+<table>
       <tbody>
         <tr>
-          <td valign="top">path expression
-          </td>
-          <td valign="top">parsed form
-          </td>
+          <th valign="top">path expression
+          </th>
+          <th valign="top">parsed form
+          </th>
         </tr>
         <tr>
           <td valign="top"><big><tt><<"a:b[1]:c">>
@@ -233,5 +231,3 @@ From the moment a path expression contains an operator who returns a list, resul
         </tr>
       </tbody>
     </table>
-
-
