@@ -5,8 +5,7 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib,
-                  sqlparse
+                  stdlib
                  ]},
   {mod, { jpparse_app, []}},
   {env, []}
