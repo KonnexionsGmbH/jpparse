@@ -141,6 +141,7 @@ parse_test() ->
     ?debugMsg("==========================================="),
     ?debugMsg("|    J S O N   P A T H   P A R S I N G    |"),
     ?debugMsg("==========================================="),
+    catch application:start(?MODULE),
     Cwd = filename:absname(""),
     {ShowParseTree, Tests} =
         case file:consult(filename:join([Cwd, "..", "test", "test.txt"])) of
