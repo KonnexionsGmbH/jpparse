@@ -37,13 +37,16 @@ Json Path Parser parses a Json path into an abstract syntax tree, ready to be in
 
 <dt>'$keys$'</dt>
    <dd> Signifies you wish to work on (or return) the object keys as if they were a list (containing the object's keys). Is understood as being a property.</dd>
-
-<dt>'$first-child$'</dt>
+   
+<dt>'$values$'</dt>
+   <dd> Signifies you wish to work on (or return) the object values as if they were a list (containing the object's values). Is understood as being a property.</dd>
+   
+<dt>'$firstChild$'</dt>
     <dd>Signifies you wish to work on the first value of the object, whatever the key. Is understood as being a property.</dd>
 </dl>
 
 ####"single value / list of values as result" operator correspondence table
-From the moment a path expression contains an operator who returns a list, result will be a list., even if only a single object matches.
+From the moment a path expression contains an operator who returns a list, result will be a list, even if only a single object matches.
 
 <table>
       <tbody>
@@ -74,7 +77,7 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>a[1]
               </tt></big></td>
-          <td valign="top"><big><tt>Single
+          <td valign="top"><big><tt>List
               </tt></big></td>
         </tr>
         <tr>
@@ -98,15 +101,25 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>b{prop}
               </tt></big></td>
-          <td valign="top"><big><tt>Single
+          <td valign="top"><big><tt>List
               </tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt>b{$keys$} or $keys$</tt></big></td>
+          <td valign="top"><big><tt>b{$keys$} or b:$keys$</tt></big></td>
+          <td valign="top"><big><tt>List</tt></big></td>
+        </tr>
+         <tr>
+          <td valign="top"><big><tt>b{$values$} or b:$values$</tt></big></td>
           <td valign="top"><big><tt>List</tt></big></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt>b{$first-child$} or $first-child$ 
+          <td valign="top"><big><tt>b{$first-child$}
+              </tt></big></td>
+          <td valign="top"><big><tt>List
+              </tt></big></td>
+        </tr>
+        <tr>
+          <td valign="top"><big><tt>b:$first-child$
               </tt></big></td>
           <td valign="top"><big><tt>Single
               </tt></big></td>
@@ -141,7 +154,7 @@ From the moment a path expression contains an operator who returns a list, resul
     <dd>Unary function: Parameter list contains the path elements to traverse.</dd>
 
 <dt>'$anything$</dt>
-    <dd>Nullary function: translates to whatever the inclosed name may mean (currently supported: `first-child`, `keys`)</dd>
+    <dd>Nullary function: translates to whatever the inclosed name may mean (currently supported: `firstChild`, `keys`, `values`)</dd>
        
 
 ##jpparse grammar/syntax examples:
@@ -173,7 +186,7 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{}:c"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, '_'}, &lt;&lt;"c"&gt;&gt;]}</tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', &lt;&lt;"b"&gt;&gt;, []}, &lt;&lt;"c"&gt;&gt;]}</tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b{c}"&gt;&gt;
@@ -183,25 +196,38 @@ From the moment a path expression contains an operator who returns a list, resul
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"a:b[]:c"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><tt><big>{':', [&lt;&lt;"a"&gt;&gt;, {'[]', &lt;&lt;"b"&gt;&gt;, '_'}, &lt;&lt;"c"&gt;&gt;]}</big></tt></td>
+          <td valign="top"><tt><big>{':', [&lt;&lt;"a"&gt;&gt;, {'[]', &lt;&lt;"b"&gt;&gt;, []}, &lt;&lt;"c"&gt;&gt;]}</big></tt></td>
         </tr>
         <tr>
-          <td valign="top"><big><tt>&lt;&lt;"[]:c{$first-child$}:d"&gt;&gt;
+          <td valign="top"><big><tt>&lt;&lt;"[]:c{$firstChild$}:d"&gt;&gt;
           </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '_', '_'}, {'{}', &lt;&lt;"c"&gt;&gt;,
-                '$first-child$'}, &lt;&lt;"d"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [{'[]', '\_', []}, {'{}', &lt;&lt;"c"&gt;&gt;,
+                {'$',&lt;&lt;""firstChild"&gt;&gt;}}, &lt;&lt;"d"&gt;&gt;]}
+              </tt></big></td>
+        </tr>
+         <tr>
+          <td valign="top"><big><tt>&lt;&lt;"c{$values$}:d"&gt;&gt;
+          </tt></big></td>
+          <td valign="top"><big><tt>{':', [{'{}', &lt;&lt;"c"&gt;&gt;,
+                {'$',&lt;&lt;""values"&gt;&gt;}}, &lt;&lt;"d"&gt;&gt;]}
+              </tt></big></td>
+        </tr>
+        <tr>
+          <td valign="top"><big><tt>&lt;&lt;"c:{$values$}"&gt;&gt;
+          </tt></big></td>
+          <td valign="top"><big><tt>{':', [&lt;&lt;"c"&gt;&gt;, {'$',&lt;&lt;""values"&gt;&gt;}}]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"[1]:d"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'[]', '_', 1}, &lt;&lt;"d"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [{'[]', '\_', 1}, &lt;&lt;"d"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
           <td valign="top"><big><tt>&lt;&lt;"{c,d}:e"&gt;&gt;
               </tt></big></td>
-          <td valign="top"><big><tt>{':', [{'{}', '_', [&lt;&lt;"c"&gt;&gt;, &lt;&lt;"d"&gt;&gt;]},&lt;&lt;"e"&gt;&gt;]}
+          <td valign="top"><big><tt>{':', [{'{}', '\_', [&lt;&lt;"c"&gt;&gt;, &lt;&lt;"d"&gt;&gt;]},&lt;&lt;"e"&gt;&gt;]}
               </tt></big></td>
         </tr>
         <tr>
@@ -226,7 +252,7 @@ From the moment a path expression contains an operator who returns a list, resul
           <td valign="top"><big><tt>&lt;&lt;"a:b[1-2]{}:c"&gt;&gt;
               </tt></big></td>
           <td valign="top"><big><tt>{':', [&lt;&lt;"a"&gt;&gt;, {'{}', {'[]', &lt;&lt;"b"&gt;&gt;, {'-', 1,
-                2}}, '_'}, &lt;&lt;"c"&gt;&gt;]}
+                2}}, []}, &lt;&lt;"c"&gt;&gt;]}
               </tt></big></td>
         </tr>
       </tbody>
