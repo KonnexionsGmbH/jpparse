@@ -13,6 +13,8 @@ Nonterminals
  object
  oabody
  paleaf
+ function
+ functionargs
 .
 
 Terminals
@@ -25,6 +27,8 @@ Terminals
  '}'
  '-'
  '$'
+ '('
+ ')'
 .
 
 Rootsymbol jsonpath.
@@ -40,6 +44,7 @@ jsonpathlist -> jelement ':' jsonpathlist   : ['$1' | '$3'].
 jelement -> paleaf                          : '$1'.
 jelement -> array                           : '$1'.
 jelement -> object                          : '$1'.
+jelement -> function                        : '$1'.
 
 array -> '[' ']'                            : {'[]', '_', []}.
 array -> '[' oabody ']'                     : {'[]', '_', '$2'}.
@@ -58,12 +63,20 @@ object -> array '{' oabody '}'              : {'{}', '$1', '$3'}.
 object -> object '{' oabody '}'             : {'{}', '$1', '$3'}.
 
 oabody -> paleaf                            : ['$1'].
+oabody -> function                          : ['$1'].
 oabody -> paleaf '-' paleaf                 : [{'-', '$1', '$3'}].
 oabody -> paleaf ',' oabody                 : ['$1' | '$3'].
 
+function -> STRING '(' functionargs ')'     : {'fun', unwrap('$1'), '$3'}.
+
+functionargs -> '$empty'                    : [].
+functionargs -> paleaf                      : ['$1'].
+functionargs -> function                    : ['$1'].
+functionargs -> functionargs ',' paleaf     : '$1' ++ ['$3'].
+functionargs -> paleaf ',' functionargs     : ['$1'] ++ '$3'.
+
 paleaf -> STRING                            : unwrap('$1').
 paleaf -> '$' STRING '$'                    : {'$', unwrap('$2')}.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
