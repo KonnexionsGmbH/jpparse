@@ -66,6 +66,7 @@ oabody -> paleaf                            : ['$1'].
 oabody -> function                          : ['$1'].
 oabody -> paleaf '-' paleaf                 : [{'-', '$1', '$3'}].
 oabody -> paleaf ',' oabody                 : ['$1' | '$3'].
+oabody -> oabody ',' paleaf                 : '$1' ++ ['$3'].
 
 function -> STRING '(' functionargs ')'     : {'fun', unwrap('$1'), '$3'}.
 
