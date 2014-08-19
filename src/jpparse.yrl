@@ -1,3 +1,4 @@
+%% -*- erlang -*-
 Header "%% Copyright (C) K2 Informatics GmbH"
 "%% @private"
 "%% @Author Bikram Chatterjee"
@@ -59,7 +60,7 @@ Erlang code.
 -export([init/1]).
 
 % parser and compiler interface
--export([parsetree/1]).
+-export([parsetree/1, foldtd/3, foldbu/3, string/1]).
 
 %%--------------------------------------------------------------------------
 %%                          dummy application interface
@@ -110,6 +111,107 @@ parsetree(SomethingElse) -> {parse_error, {not_a_valid_json_path, SomethingElse}
 %%--------------------------------------------------------------------------
 %%                                  COMPILER
 %%--------------------------------------------------------------------------
+-define(TD(__L,__Pt,__AccIn),
+        if T =:= td -> Fun(__L,__Pt,__AccIn);
+           true -> __AccIn end).
+-define(BU(__L,__Pt,__AccIn),
+        if T =:= bu -> Fun(__L,__Pt,__AccIn);
+           true -> __AccIn end).
+
+string(Pt) ->
+    {ok, list_to_binary(foldbu(fun stringfun/3, [], Pt))}.
+
+stringfun(_Depth, {'$',_} = _Pt, Stk) ->
+    [A|Rest] = Stk,
+    [string:join(["$",A,"$"], "") | Rest];
+stringfun(_Depth, {'fun',_,Args} = _Pt, Stk) ->
+    {PArgs, [A|Rest]} = lists:split(length(Args), Stk),
+    [string:join([A, "("
+                  , string:join(lists:reverse(PArgs), ",")
+                  , ")"]
+                 , "") | Rest];
+stringfun(_Depth, {Op,_,Args} = _Pt, Stk)
+  when Op =:= '[]'; Op =:= '{}' ->
+    {PArgs, [A|Rest]} = lists:split(length(Args), Stk),
+    {Lb,Rb} = case Op of
+                  '[]' -> {"[","]"};
+                  '{}' -> {"{","}"}
+              end,
+    [string:join([A, Lb
+                  , string:join(lists:reverse(PArgs), ",")
+                  , Rb]
+                 , "") | Rest];
+stringfun(_Depth, {':',_,_} = _Pt, Stk) ->
+    [B,A|Rest] = Stk,
+    [string:join([A,":",B], "")|Rest];
+stringfun(_Depth, Pt, Stk) when is_binary(Pt) ->
+    [binary_to_list(Pt)|Stk];
+stringfun(_Depth, Pt, Stk) when is_integer(Pt) ->
+    [integer_to_list(Pt)|Stk].
+
+-spec foldtd(Function :: fun((Depth :: integer()
+                            , SubParseTree :: any()
+                            , AccIn :: any()) -> AccOut :: any())
+             , Acc :: any()
+             , ParseTree :: tuple()) -> any().
+foldtd(Fun, Acc, Pt) when is_function(Fun, 3) ->
+    fold_i({td,Fun}, Acc, Pt).
+
+-spec foldbu(Function :: fun((Depth :: integer()
+                            , SubParseTree :: any()
+                            , AccIn :: any()) -> AccOut :: any())
+             , Acc :: any()
+             , ParseTree :: tuple()) -> any().
+foldbu(Fun, Acc, Pt) when is_function(Fun, 3) ->
+    fold_i({bu,Fun}, Acc, Pt).
+
+% internal fold function
+fold_i(Fun, Acc, Pt) ->
+    case catch fold_i(Fun, Acc, Pt, 0) of
+        {'EXIT',Error} -> Error;
+        Result -> Result
+    end.
+fold_i({T,Fun}, Acc, B, Lvl)
+  when is_binary(B); is_integer(B) ->
+    Acc1 = ?TD(Lvl,B,Acc),
+    ?BU(Lvl,B,Acc1);
+fold_i({T,Fun}, Acc, {':', R, L}, Lvl) ->
+    Acc1 = ?TD(Lvl,{':', R, L},Acc),
+    Acc2 = fold_i({T,Fun}, Acc1, L, Lvl+1),
+    Acc3 = fold_i({T,Fun}, Acc2, R, Lvl+1),
+    ?BU(Lvl,{':', R, L},Acc3);
+fold_i({T,Fun}, Acc, {Op, L, R}, Lvl)
+  when ((Op =:=  '{}') orelse (Op =:=  '[]'))
+       andalso is_list(R) ->
+    Acc1 = ?TD(Lvl,{Op, L, R},Acc),
+    Acc2 = fold_i({T,Fun}, Acc1, L, Lvl+1),
+    Acc3 = lists:foldl(              
+        fun(Ri, Acci) ->
+            fold_i({T,Fun}, Acci, Ri, Lvl+1)
+        end
+        , Acc2, R),
+    ?BU(Lvl,{Op, L, R},Acc3);
+fold_i({T,Fun}, Acc, {'fun',Fn,Args}, Lvl)
+  when is_binary(Fn), is_list(Args) ->
+    Acc1 = ?TD(Lvl,{'fun', Fn, Args},Acc),
+    Acc2 = fold_i({T,Fun}, Acc1, Fn, Lvl+1),
+    Acc3 = lists:foldl(              
+        fun(Arg, Acci) ->
+            fold_i({T,Fun}, Acci, Arg, Lvl+1)
+        end
+        , Acc2, Args),
+    ?BU(Lvl,{'fun',Fn,Args},Acc3);
+fold_i({T,Fun}, Acc, {'$',Tok}, Lvl)
+  when is_binary(Tok) ->
+    Acc1 = ?TD(Lvl,{'$',Tok},Acc),
+    Acc2 = fold_i({T,Fun}, Acc1, Tok, Lvl+1),
+    ?BU(Lvl,{'$',Tok},Acc2);
+fold_i({T,Fun}, Acc, empty, Lvl) ->
+    Acc1 = ?TD(Lvl,<<>>,Acc),
+    ?BU(Lvl,<<>>,Acc1);
+fold_i(_, _Acc, Pt, _) ->
+    throw({error, unsupported, Pt}).
+
 %%--------------------------------------------------------------------------
 
 
@@ -158,6 +260,14 @@ test_parse(N, ShowParseTree, [{Test,Target}|Tests]) ->
     end,
     ?assertEqual(Target, PTree),
     if ShowParseTree -> ?debugFmt("~p", [PTree]); true -> ok end,
+    FoldTest = case jpparse:string(PTree) of
+        {ok, Ft} -> Ft;
+        {error, FError} ->
+            ?debugFmt("Folding Error : ~p", [FError]),
+            ?debugFmt("ParseTree :~p", [PTree]),
+            ?assertEqual(ok, fold_error)
+    end,
+    ?assertEqual(Test, binary_to_list(FoldTest)),
     test_parse(N+1, ShowParseTree, Tests).
 
 t_tokenize(Test) ->
