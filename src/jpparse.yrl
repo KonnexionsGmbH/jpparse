@@ -168,7 +168,7 @@ foldbu(Fun, Acc, Pt) when is_function(Fun, 3) ->
 % internal fold function
 fold_i(Fun, Acc, Pt) ->
     case catch fold_i(Fun, Acc, Pt, 0) of
-        {'EXIT',Error} -> Error;
+        {'EXIT',Error} -> {error, Error};
         Result -> Result
     end.
 fold_i({T,Fun}, Acc, B, Lvl)
@@ -210,7 +210,7 @@ fold_i({T,Fun}, Acc, empty, Lvl) ->
     Acc1 = ?TD(Lvl,<<>>,Acc),
     ?BU(Lvl,<<>>,Acc1);
 fold_i(_, _Acc, Pt, _) ->
-    throw({error, unsupported, Pt}).
+    exit({unsupported, Pt}).
 
 %%--------------------------------------------------------------------------
 
