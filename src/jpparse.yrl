@@ -125,9 +125,6 @@ parsetree(SomethingElse) -> {parse_error, {not_a_valid_json_path, SomethingElse}
 string(Pt) ->
     {ok, list_to_binary(foldbu(fun stringfun/3, [], Pt))}.
 
-stringfun(_Depth, {'#',_,_} = _Pt, Stk) ->
-    [A,B|Rest] = Stk,
-    [string:join([A,"#",B], "") | Rest];
 stringfun(_Depth, {'fun',_,Args} = _Pt, Stk) ->
     {PArgs, [A|Rest]} = lists:split(length(Args), Stk),
     [string:join([A, "("
@@ -146,7 +143,7 @@ stringfun(_Depth, {Op,_,Args} = _Pt, Stk)
                   , Rb]
                  , "") | Rest];
 stringfun(_Depth, {O,_,_} = _Pt, Stk)
-  when O =:= ':'; O =:= '::' ->
+  when O =:= ':'; O =:= '::'; O =:= '#' ->
     [B,A|Rest] = Stk,
     [string:join([A,atom_to_list(O),B], "")|Rest];
 stringfun(_Depth, Pt, Stk) when is_binary(Pt) ->
@@ -181,7 +178,7 @@ fold_i({T,Fun}, Acc, B, Lvl)
     Acc1 = ?TD(Lvl,B,Acc),
     ?BU(Lvl,B,Acc1);
 fold_i({T,Fun}, Acc, {O, R, L}, Lvl)
-  when O =:= '::'; O =:= ':' ->
+  when O =:= '::'; O =:= ':'; O =:= '#' ->
     Acc1 = ?TD(Lvl,{O, R, L},Acc),
     Acc2 = fold_i({T,Fun}, Acc1, L, Lvl+1),
     Acc3 = fold_i({T,Fun}, Acc2, R, Lvl+1),
@@ -207,12 +204,6 @@ fold_i({T,Fun}, Acc, {'fun',Fn,Args}, Lvl)
         end
         , Acc2, Args),
     ?BU(Lvl,{'fun',Fn,Args},Acc3);
-fold_i({T,Fun}, Acc, {'#',Tok,Opr}, Lvl)
-  when is_binary(Tok) ->
-    Acc1 = ?TD(Lvl,{'#',Tok,Opr},Acc),
-    Acc2 = fold_i({T,Fun}, Acc1, Tok, Lvl+1),
-    Acc3 = fold_i({T,Fun}, Acc2, Opr, Lvl+1),
-    ?BU(Lvl,{'#',Tok,Opr},Acc3);
 fold_i({T,Fun}, Acc, empty, Lvl) ->
     Acc1 = ?TD(Lvl,<<>>,Acc),
     ?BU(Lvl,<<>>,Acc1);
