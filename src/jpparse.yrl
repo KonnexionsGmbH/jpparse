@@ -15,12 +15,13 @@ Nonterminals
 Terminals
  STRING
  ':'
+ '::'
  '['
  '{'
  ','
  ']'
  '}'
- '$'
+ '#'
  '('
  ')'
 .
@@ -28,14 +29,18 @@ Terminals
 Rootsymbol jp.
 
 Left 500 ':'.
+Left 500 '::'.
 Left 300 '['.
 Left 300 '{'.
+Left 300 '#'.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 jp -> '$empty'          : 'empty'.
 jp -> leaf              : '$1'.
+jp -> jp '#' leaf       : {'#', '$3', '$1'}.
 jp -> jp ':' jp         : {':', flat('$3'), flat('$1')}.
+jp -> jp '::' jp        : {'::', flat('$3'), flat('$1')}.
 jp -> jp '[' args ']'   : {'[]', '$1', flat('$3')}.
 jp -> jp '{' args '}'   : {'{}', '$1', flat('$3')}.
 jp -> leaf '(' args ')' : {'fun', '$1', flat('$3')}.
@@ -44,7 +49,6 @@ args -> jp              : ['$1'].
 args -> jp ',' args     : ['$1' | '$3'].
 
 leaf -> STRING          : unwrap('$1').
-leaf -> '$' STRING '$'  : {'$', unwrap('$2')}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -121,9 +125,9 @@ parsetree(SomethingElse) -> {parse_error, {not_a_valid_json_path, SomethingElse}
 string(Pt) ->
     {ok, list_to_binary(foldbu(fun stringfun/3, [], Pt))}.
 
-stringfun(_Depth, {'$',_} = _Pt, Stk) ->
-    [A|Rest] = Stk,
-    [string:join(["$",A,"$"], "") | Rest];
+stringfun(_Depth, {'#',_,_} = _Pt, Stk) ->
+    [A,B|Rest] = Stk,
+    [string:join([A,"#",B], "") | Rest];
 stringfun(_Depth, {'fun',_,Args} = _Pt, Stk) ->
     {PArgs, [A|Rest]} = lists:split(length(Args), Stk),
     [string:join([A, "("
@@ -141,9 +145,10 @@ stringfun(_Depth, {Op,_,Args} = _Pt, Stk)
                   , string:join(lists:reverse(PArgs), ",")
                   , Rb]
                  , "") | Rest];
-stringfun(_Depth, {':',_,_} = _Pt, Stk) ->
+stringfun(_Depth, {O,_,_} = _Pt, Stk)
+  when O =:= ':'; O =:= '::' ->
     [B,A|Rest] = Stk,
-    [string:join([A,":",B], "")|Rest];
+    [string:join([A,atom_to_list(O),B], "")|Rest];
 stringfun(_Depth, Pt, Stk) when is_binary(Pt) ->
     [binary_to_list(Pt)|Stk];
 stringfun(_Depth, Pt, Stk) when is_integer(Pt) ->
@@ -175,11 +180,12 @@ fold_i({T,Fun}, Acc, B, Lvl)
   when is_binary(B); is_integer(B) ->
     Acc1 = ?TD(Lvl,B,Acc),
     ?BU(Lvl,B,Acc1);
-fold_i({T,Fun}, Acc, {':', R, L}, Lvl) ->
-    Acc1 = ?TD(Lvl,{':', R, L},Acc),
+fold_i({T,Fun}, Acc, {O, R, L}, Lvl)
+  when O =:= '::'; O =:= ':' ->
+    Acc1 = ?TD(Lvl,{O, R, L},Acc),
     Acc2 = fold_i({T,Fun}, Acc1, L, Lvl+1),
     Acc3 = fold_i({T,Fun}, Acc2, R, Lvl+1),
-    ?BU(Lvl,{':', R, L},Acc3);
+    ?BU(Lvl,{O, R, L},Acc3);
 fold_i({T,Fun}, Acc, {Op, L, R}, Lvl)
   when ((Op =:=  '{}') orelse (Op =:=  '[]'))
        andalso is_list(R) ->
@@ -201,11 +207,12 @@ fold_i({T,Fun}, Acc, {'fun',Fn,Args}, Lvl)
         end
         , Acc2, Args),
     ?BU(Lvl,{'fun',Fn,Args},Acc3);
-fold_i({T,Fun}, Acc, {'$',Tok}, Lvl)
+fold_i({T,Fun}, Acc, {'#',Tok,Opr}, Lvl)
   when is_binary(Tok) ->
-    Acc1 = ?TD(Lvl,{'$',Tok},Acc),
+    Acc1 = ?TD(Lvl,{'#',Tok,Opr},Acc),
     Acc2 = fold_i({T,Fun}, Acc1, Tok, Lvl+1),
-    ?BU(Lvl,{'$',Tok},Acc2);
+    Acc3 = fold_i({T,Fun}, Acc2, Opr, Lvl+1),
+    ?BU(Lvl,{'#',Tok,Opr},Acc3);
 fold_i({T,Fun}, Acc, empty, Lvl) ->
     Acc1 = ?TD(Lvl,<<>>,Acc),
     ?BU(Lvl,<<>>,Acc1);

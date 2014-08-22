@@ -4,7 +4,9 @@ Definitions.
 Rules.
 
 % delimiters
-[\:\(\)\[\]\{\}\$\,\|\-\+\*\/\\%]   : {token, {list_to_atom(?debug(TokenChars)), TokenLine}}.
+(\:\:)                              : {token, {list_to_atom(?debug(TokenChars)), TokenLine}}.
+%(\#(keys|values))                   : {token, {list_to_atom(?debug(TokenChars)), TokenLine}}.
+[\:\(\)\[\]\{\}\#\,\|\-\+\*\/\\%]   : {token, {list_to_atom(?debug(TokenChars)), TokenLine}}.
 [A-Za-z0-9_]*                       : {token, {'STRING', TokenLine, ?debug(TokenChars)}}.
 
 Erlang code.
