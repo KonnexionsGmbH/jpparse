@@ -64,7 +64,10 @@ Erlang code.
 -export([init/1]).
 
 % parser and compiler interface
--export([parsetree/1, foldtd/3, foldbu/3, string/1]).
+-export([parsetree/1, parsetree_with_tokens/1
+         , foldtd/3, foldbu/3
+         , string/1, roots/1
+        ]).
 
 %%--------------------------------------------------------------------------
 %%                          dummy application interface
@@ -93,10 +96,19 @@ flat(Other) -> Other.
 %%--------------------------------------------------------------------------
 %%                                  PARSER
 %%--------------------------------------------------------------------------
--spec parsetree(binary()|list()) -> {parse_error, term()} | {lex_error, term()} | {ok, {[tuple()], list()}}.
-parsetree(JPath) when is_binary(JPath) -> parsetree(binary_to_list(JPath));
-parsetree([]) -> {parse_error, {not_a_valid_json_path, []}};
-parsetree(JPath) when is_list(JPath) ->
+-spec parsetree(binary()|list()) -> {parse_error, term()} | {lex_error, term()} | {ok, tuple()}.
+parsetree(JPath) ->
+   case parsetree_with_tokens(JPath) of
+       {ok, {ParseTree, _Tokens}} -> {ok, ParseTree};
+       Error -> Error
+   end.
+
+-spec parsetree_with_tokens(binary()|list()) ->
+    {parse_error, term()} | {lex_error, term()} | {ok, {tuple(), list()}}.
+parsetree_with_tokens(JPath) when is_binary(JPath) ->
+    parsetree_with_tokens(binary_to_list(JPath));
+parsetree_with_tokens([]) -> {parse_error, {not_a_valid_json_path, []}};
+parsetree_with_tokens(JPath) when is_list(JPath) ->
     catch application:start(jpparse),
     case jsonpath_lex:string(JPath) of
         {ok, Toks, _} ->
@@ -107,21 +119,19 @@ parsetree(JPath) when is_list(JPath) ->
             end;
         LexErrorInfo -> {lex_error, jsonpath_lex:format_error(LexErrorInfo)}
     end;
-parsetree(SomethingElse) -> {parse_error, {not_a_valid_json_path, SomethingElse}}.
+parsetree_with_tokens(SomethingElse) -> {parse_error, {not_a_valid_json_path, SomethingElse}}.
 
 %%--------------------------------------------------------------------------
 
 
 %%--------------------------------------------------------------------------
-%%                                  COMPILER
+%%                                  FOLDs
 %%--------------------------------------------------------------------------
--define(TD(__L,__Pt,__AccIn),
-        if T =:= td -> Fun(__L,__Pt,__AccIn);
-           true -> __AccIn end).
--define(BU(__L,__Pt,__AccIn),
-        if T =:= bu -> Fun(__L,__Pt,__AccIn);
-           true -> __AccIn end).
 
+% Folds a json path parse tree into a string
+%  that represents a same jppath from which
+%  the parse tree was originally constructed
+-spec string(tuple()) -> {ok, binary()}.
 string(Pt) ->
     {ok, list_to_binary(foldbu(fun stringfun/3, [], Pt))}.
 
@@ -151,6 +161,21 @@ stringfun(_Depth, Pt, Stk) when is_binary(Pt) ->
 stringfun(_Depth, Pt, Stk) when is_integer(Pt) ->
     [integer_to_list(Pt)|Stk].
 
+% Folds a json path parse tree returning path roots
+%  as sorted array
+-spec roots(tuple()) -> {ok, list()}.
+roots(Pt) ->
+    {ok, lists:usort(foldbu(fun rootsfun/3, [], Pt))}.
+
+rootsfun(_Depth, {':',_,R},  Rs) when is_binary(R) -> [R|Rs];
+rootsfun(_Depth, {'::',_,R}, Rs) when is_binary(R) -> [R|Rs];
+rootsfun(_Depth, {'#',_,R},  Rs) when is_binary(R) -> [R|Rs];
+rootsfun(_Depth, {'[]',R,_}, Rs) when is_binary(R) -> [R|Rs];
+rootsfun(_Depth, {'{}',R,_}, Rs) when is_binary(R) -> [R|Rs];
+rootsfun(_Depth, _Pt, Rs) -> Rs.
+
+% Folds a jppath parsee tree applying fold function
+%  in a Top-Down walk
 -spec foldtd(Function :: fun((Depth :: integer()
                             , SubParseTree :: any()
                             , AccIn :: any()) -> AccOut :: any())
@@ -159,6 +184,8 @@ stringfun(_Depth, Pt, Stk) when is_integer(Pt) ->
 foldtd(Fun, Acc, Pt) when is_function(Fun, 3) ->
     fold_i({td,Fun}, Acc, Pt).
 
+% Folds a jppath parsee tree applying fold function
+%  in a Boottom-Up walk
 -spec foldbu(Function :: fun((Depth :: integer()
                             , SubParseTree :: any()
                             , AccIn :: any()) -> AccOut :: any())
@@ -167,7 +194,15 @@ foldtd(Fun, Acc, Pt) when is_function(Fun, 3) ->
 foldbu(Fun, Acc, Pt) when is_function(Fun, 3) ->
     fold_i({bu,Fun}, Acc, Pt).
 
-% internal fold function
+% Internal fold function that walks the jpparse parse
+%  tree recursively applying the fold function in
+%  top-down or bottom-up manner
+-define(TD(__L,__Pt,__AccIn),
+        if T =:= td -> Fun(__L,__Pt,__AccIn);
+           true -> __AccIn end).
+-define(BU(__L,__Pt,__AccIn),
+        if T =:= bu -> Fun(__L,__Pt,__AccIn);
+           true -> __AccIn end).
 fold_i(Fun, Acc, Pt) ->
     case catch fold_i(Fun, Acc, Pt, 0) of
         {'EXIT',Error} -> {error, Error};
