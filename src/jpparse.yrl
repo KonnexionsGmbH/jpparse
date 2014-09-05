@@ -165,7 +165,10 @@ stringfun(_Depth, Pt, Stk) when is_integer(Pt) ->
 %  as sorted array
 -spec roots(tuple()) -> {ok, list()}.
 roots(Pt) ->
-    {ok, lists:usort(foldbu(fun rootsfun/3, [], Pt))}.
+    case foldbu(fun rootsfun/3, [], Pt) of
+        {error, _} = Error -> Error;
+        Folded -> {ok, lists:usort(Folded)}
+    end.
 
 rootsfun(_Depth, {':',_,R},  Rs) when is_binary(R) -> [R|Rs];
 rootsfun(_Depth, {'::',_,R}, Rs) when is_binary(R) -> [R|Rs];
