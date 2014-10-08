@@ -1,4 +1,4 @@
-#JPParse
+#JPParse ![Travis-CI](https://magnum.travis-ci.com/k2informatics/jpparse.svg?token=jAKQYF1CVGmsnuguN6iU&branch=master)
 ##Introduction:
 
 
