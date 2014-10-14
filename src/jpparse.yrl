@@ -58,7 +58,7 @@ Erlang code.
 -behaviour(supervisor).
 
 % application callbacks
--export([start/0, start/2, stop/1]).
+-export([start/0, start/2, stop/1, stop/0]).
 
 % Supervisor callbacks
 -export([init/1]).
@@ -73,7 +73,9 @@ Erlang code.
 %%                          dummy application interface
 %%--------------------------------------------------------------------------
 
-start() -> application:start(?MODULE).
+start()             -> application:start(?MODULE).
+stop()              -> application:stop(?MODULE).
+
 start(_Type, _Args) -> supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 stop(_State)        -> ok.
 init([])            -> {ok, { {one_for_one, 5, 10}, []} }.
