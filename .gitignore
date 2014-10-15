@@ -1,10 +1,11 @@
 .eunit
-deps
 *.o
 *.beam
 *.plt
 *.swp
+*.dot
 erl_crash.dump
+deps/
 ebin/
 src/jpparse.erl
 src/jsonpath_lex.erl
