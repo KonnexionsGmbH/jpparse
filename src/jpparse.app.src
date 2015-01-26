@@ -1,12 +1,14 @@
+%%-*- erlang -*-
+%% ex: ft=erlang
 {application, jpparse,
  [
   {description, "JSON path parser and compiler"},
-  {vsn, "0.0.3"},
+  {vsn, "0.1.0"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib
                  ]},
-  {mod, { jpparse_app, []}},
+  {mod, {jpparse_app, []}},
   {env, []}
  ]}.

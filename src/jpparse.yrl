@@ -34,7 +34,7 @@ Left 300 '['.
 Left 300 '{'.
 Left 300 '#'.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 jp -> '$empty'          : 'empty'.
 jp -> leaf              : '$1'.
@@ -50,7 +50,7 @@ args -> jp ',' args     : ['$1' | '$3'].
 
 leaf -> STRING          : unwrap('$1').
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Erlang code.
 
@@ -69,9 +69,9 @@ Erlang code.
          , string/1, roots/1
         ]).
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%                          dummy application interface
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 start()             -> application:start(?MODULE).
 stop()              -> application:stop(?MODULE).
@@ -80,9 +80,9 @@ start(_Type, _Args) -> supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 stop(_State)        -> ok.
 init([])            -> {ok, { {one_for_one, 5, 10}, []} }.
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%                          parser helper functions
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 unwrap({_,_,X}) when is_list(X) ->
     case catch list_to_integer(X) of
@@ -93,13 +93,14 @@ unwrap({_,_,X}) when is_list(X) ->
 flat(['empty']) -> [];
 flat(Other) -> Other.
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%                                  PARSER
-%%--------------------------------------------------------------------------
--spec parsetree(binary()|list()) -> {parse_error, term()} | {lex_error, term()} | {ok, tuple()}.
+%%-----------------------------------------------------------------------------
+-spec parsetree(binary()|list()) ->
+    {parse_error, term()} | {lex_error, term()} | {ok, tuple()}.
 parsetree(JPath) ->
    case parsetree_with_tokens(JPath) of
        {ok, {ParseTree, _Tokens}} -> {ok, ParseTree};
@@ -118,45 +119,40 @@ parsetree_with_tokens(JPath) when is_list(JPath) ->
             case jpparse:parse(Toks) of
                 {ok, PTree} -> {ok, {PTree, Toks}};
                 {error, {Line, Module, Message}} ->
-                    {parse_error, {Line, lists:flatten(Module:format_error(Message)), Toks}}
+                    {parse_error,
+                     {Line, lists:flatten(Module:format_error(Message)), Toks}}
             end;
         LexErrorInfo -> {lex_error, jsonpath_lex:format_error(LexErrorInfo)}
     end;
-parsetree_with_tokens(SomethingElse) -> {parse_error, {not_a_valid_json_path, SomethingElse}}.
+parsetree_with_tokens(SomethingElse) ->
+    {parse_error, {not_a_valid_json_path, SomethingElse}}.
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%                                  FOLDs
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
-% Folds a json path parse tree into a string
-%  that represents a same jppath from which
-%  the parse tree was originally constructed
+% Folds a json path parse tree into a string that represents a same jppath from
+% which the parse tree was originally constructed
 -spec string(tuple()) -> {ok, binary()}.
 string(Pt) ->
     {ok, list_to_binary(foldbu(fun stringfun/3, [], Pt))}.
 
 stringfun(_Depth, {'fun',_,Args} = _Pt, Stk) ->
     {PArgs, [A|Rest]} = lists:split(length(Args), Stk),
-    [string:join([A, "("
-                  , string:join(lists:reverse(PArgs), ",")
-                  , ")"]
-                 , "") | Rest];
-stringfun(_Depth, {Op,_,Args} = _Pt, Stk)
-  when Op =:= '[]'; Op =:= '{}' ->
+    [string:join([A, "(", string:join(lists:reverse(PArgs), ","), ")"], "")
+     | Rest];
+stringfun(_Depth, {Op,_,Args} = _Pt, Stk) when Op =:= '[]'; Op =:= '{}' ->
     {PArgs, [A|Rest]} = lists:split(length(Args), Stk),
     {Lb,Rb} = case Op of
                   '[]' -> {"[","]"};
                   '{}' -> {"{","}"}
               end,
-    [string:join([A, Lb
-                  , string:join(lists:reverse(PArgs), ",")
-                  , Rb]
-                 , "") | Rest];
-stringfun(_Depth, {O,_,_} = _Pt, Stk)
-  when O =:= ':'; O =:= '::'; O =:= '#' ->
+    [string:join([A, Lb, string:join(lists:reverse(PArgs), ","), Rb], "")
+     | Rest];
+stringfun(_Depth, {O,_,_} = _Pt, Stk) when O =:= ':'; O =:= '::'; O =:= '#' ->
     [B,A|Rest] = Stk,
     [string:join([A,atom_to_list(O),B], "")|Rest];
 stringfun(_Depth, Pt, Stk) when is_binary(Pt) ->
@@ -182,21 +178,19 @@ rootsfun(_Depth, _Pt, Rs) -> Rs.
 
 % Folds a jppath parsee tree applying fold function
 %  in a Top-Down walk
--spec foldtd(Function :: fun((Depth :: integer()
-                            , SubParseTree :: any()
-                            , AccIn :: any()) -> AccOut :: any())
-             , Acc :: any()
-             , ParseTree :: tuple()) -> any().
+-spec foldtd(Function :: fun((Depth :: integer(), SubParseTree :: any(),
+                              AccIn :: any()) -> AccOut :: any()),
+                             Acc :: any(),
+                             ParseTree :: tuple()) -> any().
 foldtd(Fun, Acc, Pt) when is_function(Fun, 3) ->
     fold_i({td,Fun}, Acc, Pt).
 
 % Folds a jppath parsee tree applying fold function
 %  in a Boottom-Up walk
--spec foldbu(Function :: fun((Depth :: integer()
-                            , SubParseTree :: any()
-                            , AccIn :: any()) -> AccOut :: any())
-             , Acc :: any()
-             , ParseTree :: tuple()) -> any().
+-spec foldbu(Function :: fun((Depth :: integer(), SubParseTree :: any(),
+                              AccIn :: any()) -> AccOut :: any()),
+                             Acc :: any(),
+                             ParseTree :: tuple()) -> any().
 foldbu(Fun, Acc, Pt) when is_function(Fun, 3) ->
     fold_i({bu,Fun}, Acc, Pt).
 
@@ -204,46 +198,36 @@ foldbu(Fun, Acc, Pt) when is_function(Fun, 3) ->
 %  tree recursively applying the fold function in
 %  top-down or bottom-up manner
 -define(TD(__L,__Pt,__AccIn),
-        if T =:= td -> Fun(__L,__Pt,__AccIn);
-           true -> __AccIn end).
+        if T =:= td -> Fun(__L,__Pt,__AccIn); true -> __AccIn end).
 -define(BU(__L,__Pt,__AccIn),
-        if T =:= bu -> Fun(__L,__Pt,__AccIn);
-           true -> __AccIn end).
+        if T =:= bu -> Fun(__L,__Pt,__AccIn); true -> __AccIn end).
 fold_i(Fun, Acc, Pt) ->
     case catch fold_i(Fun, Acc, Pt, 0) of
         {'EXIT',Error} -> {error, Error};
         Result -> Result
     end.
-fold_i({T,Fun}, Acc, B, Lvl)
-  when is_binary(B); is_integer(B) ->
+fold_i({T,Fun}, Acc, B, Lvl) when is_binary(B); is_integer(B) ->
     Acc1 = ?TD(Lvl,B,Acc),
     ?BU(Lvl,B,Acc1);
-fold_i({T,Fun}, Acc, {O, R, L}, Lvl)
-  when O =:= '::'; O =:= ':'; O =:= '#' ->
+fold_i({T,Fun}, Acc, {O, R, L}, Lvl) when O =:= '::'; O =:= ':'; O =:= '#' ->
     Acc1 = ?TD(Lvl,{O, R, L},Acc),
     Acc2 = fold_i({T,Fun}, Acc1, L, Lvl+1),
     Acc3 = fold_i({T,Fun}, Acc2, R, Lvl+1),
     ?BU(Lvl,{O, R, L},Acc3);
 fold_i({T,Fun}, Acc, {Op, L, R}, Lvl)
-  when ((Op =:=  '{}') orelse (Op =:=  '[]'))
-       andalso is_list(R) ->
+  when ((Op =:=  '{}') orelse (Op =:=  '[]')) andalso is_list(R) ->
     Acc1 = ?TD(Lvl,{Op, L, R},Acc),
     Acc2 = fold_i({T,Fun}, Acc1, L, Lvl+1),
-    Acc3 = lists:foldl(              
-        fun(Ri, Acci) ->
-            fold_i({T,Fun}, Acci, Ri, Lvl+1)
-        end
-        , Acc2, R),
+    Acc3 = lists:foldl(fun(Ri, Acci) ->
+                               fold_i({T,Fun}, Acci, Ri, Lvl+1)
+                       end, Acc2, R),
     ?BU(Lvl,{Op, L, R},Acc3);
-fold_i({T,Fun}, Acc, {'fun',Fn,Args}, Lvl)
-  when is_binary(Fn), is_list(Args) ->
+fold_i({T,Fun}, Acc, {'fun',Fn,Args}, Lvl) when is_binary(Fn), is_list(Args) ->
     Acc1 = ?TD(Lvl,{'fun', Fn, Args},Acc),
     Acc2 = fold_i({T,Fun}, Acc1, Fn, Lvl+1),
-    Acc3 = lists:foldl(              
-        fun(Arg, Acci) ->
-            fold_i({T,Fun}, Acci, Arg, Lvl+1)
-        end
-        , Acc2, Args),
+    Acc3 = lists:foldl(fun(Arg, Acci) ->
+                               fold_i({T,Fun}, Acci, Arg, Lvl+1)
+                       end, Acc2, Args),
     ?BU(Lvl,{'fun',Fn,Args},Acc3);
 fold_i({T,Fun}, Acc, empty, Lvl) ->
     Acc1 = ?TD(Lvl,<<>>,Acc),
@@ -251,15 +235,15 @@ fold_i({T,Fun}, Acc, empty, Lvl) ->
 fold_i(_, _Acc, Pt, _) ->
     exit({unsupported, Pt}).
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%                               EUnit test
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 parse_test() ->
     ?debugMsg("==========================================="),
@@ -322,6 +306,6 @@ t_parse(Tokens) ->
             {error, {Line, lists:flatten(Module:format_error(Message))}}
     end.
 
-%%--------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 -endif.
