@@ -8,6 +8,8 @@ Rules.
 [\:\(\)\[\]\{\}\#\,\|\-\+\*\/\\%]   : {token, {list_to_atom(?debug(TokenChars)), TokenLine}}.
 [A-Za-z0-9_\.]*                     : {token, {'STRING', TokenLine, ?debug(TokenChars)}}.
 
+([\s\t\r\n]+)                       : skip_token.    %% white space
+
 Erlang code.
 
 -define(debug(T), T).
