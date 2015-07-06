@@ -1,4 +1,4 @@
-#JPParse <a href="https://magnum.travis-ci.com/k2informatics/jpparse"><img src="https://magnum.travis-ci.com/k2informatics/jpparse.svg?token=jAKQYF1CVGmsnuguN6iU&branch=master" alt="Travis-CI"> </a>
+#JPParse <a href="https://magnum.travis-ci.com/k2informatics/jpparse"><img src="https://travis-ci.org/K2InformaticsGmbH/jpparse.svg" alt="Travis-CI"> </a>
 
 ##Introduction:
 
