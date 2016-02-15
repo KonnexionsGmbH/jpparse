@@ -106,7 +106,7 @@ path expression | parsed form
 ###Example Usage
 
 ```erlang
-1> jpparse:parsetree("a:b").
+1> jpparse:parsetree_with_tokens("a:b").
 {ok,{{':',<<"b">>,<<"a">>},
      [{'STRING',1,"a"},{':',1},{'STRING',1,"b"}]}}
 2> jpparse:parsetree("a:b{1-2"). 
@@ -127,7 +127,7 @@ path expression | parsed form
                {'STRING',1,"1"},
                {'-',1},
                {'STRING',1,"2"}]}}
-4> jpparse:parsetree("a:b[1,2]").
+4> jpparse:parsetree_with_tokens("a:b[1,2]").
 {ok,{{'[]',{':',<<"b">>,<<"a">>},[1,2]},
      [{'STRING',1,"a"},
       {':',1},
@@ -137,7 +137,7 @@ path expression | parsed form
       {',',1},
       {'STRING',1,"2"},
       {']',1}]}}
-5> jpparse:parsetree("a:b{x,y}").
+5> jpparse:parsetree_with_tokens("a:b{x,y}").
 {ok,{{'{}',{':',<<"b">>,<<"a">>},[<<"x">>,<<"y">>]},
      [{'STRING',1,"a"},
       {':',1},
