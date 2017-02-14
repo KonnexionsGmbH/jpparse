@@ -3,7 +3,7 @@ install:
 language: erlang
 notifications:
   email:
-    - walter.weinmann@gmail.com
+    - travis@k2informatics.ch
 otp_release:
   - 18.3
   - 18.2.1
