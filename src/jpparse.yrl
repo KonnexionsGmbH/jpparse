@@ -250,9 +250,11 @@ parse_test() ->
     ?debugMsg("|    J S O N   P A T H   P A R S I N G    |"),
     ?debugMsg("==========================================="),
     catch application:start(?MODULE),
-    Cwd = filename:absname(""),
+    {ok, Cwd} = file:get_cwd(),
+    RootPath = lists:reverse(filename:split(Cwd)),
+    TestDir = filename:join(lists:reverse(["test" | RootPath])),
     {ShowParseTree, Tests} =
-        case file:consult(filename:join([Cwd, "..", "test", "test.txt"])) of
+        case file:consult(filename:join(TestDir, "test.txt")) of
             {ok, [show_parse_tree, T]}  -> {true, T};
             {ok, [_, T]}                -> {false, T};
             {ok, [T]}                   -> {false, T};

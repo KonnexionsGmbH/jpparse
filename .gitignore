@@ -1,11 +1,7 @@
-.eunit
-*.o
-*.beam
-*.plt
-*.swp
-*.dot
+_build
 erl_crash.dump
-deps/
-ebin/
+rebar.lock
+src/*.dot
 src/jpparse.erl
 src/jsonpath_lex.erl
+test/*.beam
