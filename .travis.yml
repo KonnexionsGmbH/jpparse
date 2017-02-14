@@ -13,8 +13,5 @@ otp_release:
   - 17.1
   - 17.0
 script:
-  - ./rebar3 xref
   - ./rebar3 compile  
   - ./rebar3 eunit
-  - ./rebar3 ct
-  - ./rebar3 cover  
