@@ -54,31 +54,9 @@ leaf -> STRING          : unwrap('$1').
 
 Erlang code.
 
--behaviour(application).
--behaviour(supervisor).
-
-% application callbacks
--export([start/0, start/2, stop/1, stop/0]).
-
-% Supervisor callbacks
--export([init/1]).
-
 % parser and compiler interface
--export([parsetree/1, parsetree_with_tokens/1
-         , foldtd/3, foldbu/3
-         , string/1, roots/1
-        ]).
-
-%%-----------------------------------------------------------------------------
-%%                          dummy application interface
-%%-----------------------------------------------------------------------------
-
-start()             -> application:start(?MODULE).
-stop()              -> application:stop(?MODULE).
-
-start(_Type, _Args) -> supervisor:start_link({local, ?MODULE}, ?MODULE, []).
-stop(_State)        -> ok.
-init([])            -> {ok, { {one_for_one, 5, 10}, []} }.
+-export([parsetree/1, parsetree_with_tokens/1, foldtd/3, foldbu/3, string/1,
+         roots/1]).
 
 %%-----------------------------------------------------------------------------
 %%                          parser helper functions
@@ -249,7 +227,6 @@ parse_test() ->
     ?debugMsg("==========================================="),
     ?debugMsg("|    J S O N   P A T H   P A R S I N G    |"),
     ?debugMsg("==========================================="),
-    catch application:start(?MODULE),
     Cwd = filename:absname(""),
     {ShowParseTree, Tests} =
         case file:consult(filename:join([Cwd, "..", "test", "test.txt"])) of

@@ -1,4 +1,5 @@
 .eunit
+.rebar
 *.o
 *.beam
 *.plt

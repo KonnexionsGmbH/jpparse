@@ -5,10 +5,7 @@
   {description, "JSON path parser and compiler"},
   {vsn, "0.2.1"},
   {registered, []},
-  {applications, [
-                  kernel,
-                  stdlib
-                 ]},
-  {mod, {jpparse_app, []}},
+  {applications, [kernel, stdlib]},
+  {modules, [jpparse]},
   {env, []}
  ]}.
