@@ -1,6 +1,7 @@
 _build
 erl_crash.dump
 rebar.lock
+rebar3.crashdump
 src/*.dot
 src/jpparse.erl
 src/jsonpath_lex.erl
