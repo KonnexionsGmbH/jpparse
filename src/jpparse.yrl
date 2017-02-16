@@ -55,10 +55,8 @@ leaf -> STRING          : unwrap('$1').
 Erlang code.
 
 % parser and compiler interface
--export([parsetree/1, parsetree_with_tokens/1
-         , foldtd/3, foldbu/3
-         , string/1, roots/1
-        ]).
+-export([parsetree/1, parsetree_with_tokens/1, foldtd/3, foldbu/3, string/1,
+         roots/1]).
 
 %%-----------------------------------------------------------------------------
 %%                          parser helper functions
