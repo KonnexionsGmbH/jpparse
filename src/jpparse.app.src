@@ -5,6 +5,9 @@
             stdlib
         ]},
         {description, "JSON path parser and compiler"},
-        {modules, [jpparse]},
+        {modules, [
+            jpparse,
+            jpparse_fold
+        ]},
         {vsn, "0.3.0"}
     ]}.
