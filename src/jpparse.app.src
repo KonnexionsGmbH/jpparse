@@ -1,13 +1,13 @@
 {application, jpparse,
     [
+        {description, "JSON path parser and compiler"},
+        {vsn, "0.3.0"},
         {applications, [
             kernel,
             stdlib
         ]},
-        {description, "JSON path parser and compiler"},
         {modules, [
             jpparse,
             jpparse_fold
-        ]},
-        {vsn, "0.3.0"}
+        ]}
     ]}.

@@ -1,7 +1,6 @@
 -module(jpparse_fold).
 
--export([foldtd/3, foldbu/3, string/1,
-         roots/1]).
+-export([foldtd/3, foldbu/3, string/1, roots/1]).
 
 % Folds a json path parse tree into a string that represents a same jppath from
 % which the parse tree was originally constructed
@@ -49,8 +48,8 @@ rootsfun(_Depth, _Pt, Rs) -> Rs.
 %  in a Top-Down walk
 -spec foldtd(Function :: fun((Depth :: integer(), SubParseTree :: any(),
                               AccIn :: any()) -> AccOut :: any()),
-                             Acc :: any(),
-                             ParseTree :: tuple()) -> any().
+             Acc :: any(),
+             ParseTree :: tuple()) -> any().
 foldtd(Fun, Acc, Pt) when is_function(Fun, 3) ->
     fold_i({td,Fun}, Acc, Pt).
 
@@ -58,8 +57,8 @@ foldtd(Fun, Acc, Pt) when is_function(Fun, 3) ->
 %  in a Boottom-Up walk
 -spec foldbu(Function :: fun((Depth :: integer(), SubParseTree :: any(),
                               AccIn :: any()) -> AccOut :: any()),
-                             Acc :: any(),
-                             ParseTree :: tuple()) -> any().
+             Acc :: any(),
+             ParseTree :: tuple()) -> any().
 foldbu(Fun, Acc, Pt) when is_function(Fun, 3) ->
     fold_i({bu,Fun}, Acc, Pt).
 
