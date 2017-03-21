@@ -1,15 +1,15 @@
-#JPParse <a href="https://magnum.travis-ci.com/k2informatics/jpparse"><img src="https://travis-ci.org/K2InformaticsGmbH/jpparse.svg" alt="Travis-CI"> </a>
+# JPParse <a href="https://magnum.travis-ci.com/k2informatics/jpparse"><img src="https://travis-ci.org/K2InformaticsGmbH/jpparse.svg" alt="Travis-CI"> </a>
 
-##Introduction:
+## Introduction:
 
 
 Json Path Parser parses a Json path into an abstract syntax tree, ready to be interpreted for matching them to json data objects.
 
-###Still missing:
+### Still missing:
 
 
-##Glossary:
-###For the path expression:
+## Glossary:
+### For the path expression:
 
 <dl>
 <dt>Property</dt>
@@ -44,7 +44,7 @@ Json Path Parser parses a Json path into an abstract syntax tree, ready to be in
     <dd>Signifies you wish to work on the first value of the object, whatever the key. Is understood as being a property.</dd>
 </dl>
 
-####"single value / list of values as result" operator correspondence table
+#### "single value / list of values as result" operator correspondence table
 From the moment a path expression contains an operator who returns a list, result will be a list, even if only a single object matches.
 
 input | output
@@ -59,7 +59,7 @@ input | output
 `b{prop}` | List 
 `b{$keys$}` | Single (object)
 
-###For the parsed form expression:
+### For the parsed form expression:
 <dl>
 <dt>'_'</dt>
 <dd>    When used as second parameter in '{ }' or '[ ]' functions, signifies 'match all'
@@ -82,7 +82,7 @@ input | output
     <dd>Nullary function: translates to whatever the inclosed name may mean (currently supported: `firstChild`, `keys`, `values`)</dd>
        
 
-##jpparse grammar/syntax examples:
+## jpparse grammar/syntax examples:
 
 path expression | parsed form
 --- | ---
@@ -103,7 +103,7 @@ path expression | parsed form
 
 [more examples](https://github.com/k2informatics/jpparse/blob/master/test/test.txt)
 
-###Example Usage
+### Example Usage
 
 ```erlang
 1> jpparse:parsetree_with_tokens("a:b").
