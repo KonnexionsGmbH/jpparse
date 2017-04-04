@@ -3,7 +3,7 @@
 {application, jpparse,
  [
   {description, "JSON path parser and compiler"},
-  {vsn, "0.2.1"},
+  {vsn, "1.0.0"},
   {registered, []},
   {applications, [kernel, stdlib]},
   {modules, [jpparse]},
