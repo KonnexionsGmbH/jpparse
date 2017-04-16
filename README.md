@@ -1,4 +1,4 @@
-# JPParse <a href="https://travis-ci.org/K2InformaticsGmbH/jpparse"><img src="https://travis-ci.org/K2InformaticsGmbH/jpparse.svg?branch=rebar3" alt="Travis-CI"> </a>
+# JPParse [![Build Status](https://travis-ci.org/K2InformaticsGmbH/jpparse.svg?branch=rebar3)](https://travis-ci.org/K2InformaticsGmbH/jpparse)
 
 ## Introduction:
 
