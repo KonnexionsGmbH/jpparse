@@ -1,5 +1,3 @@
-before_script:
-  - kerl list installations
 install:
   - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
 language: erlang
@@ -12,3 +10,4 @@ otp_release:
 script:
   - ./rebar3 compile
   - ./rebar3 eunit
+before_script: kerl list installations
