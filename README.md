@@ -1,12 +1,10 @@
-# JPParse <a href="https://magnum.travis-ci.com/k2informatics/jpparse"><img src="https://travis-ci.org/K2InformaticsGmbH/jpparse.svg" alt="Travis-CI"> </a>
+# JPParse [![Build Status](https://travis-ci.org/K2InformaticsGmbH/jpparse.svg?branch=rebar3)](https://travis-ci.org/K2InformaticsGmbH/jpparse)
 
 ## Introduction:
-
 
 Json Path Parser parses a Json path into an abstract syntax tree, ready to be interpreted for matching them to json data objects.
 
 ### Still missing:
-
 
 ## Glossary:
 ### For the path expression:
