@@ -82,10 +82,10 @@ flat(Other) -> Other.
 -spec parsetree(binary()|list()) ->
     {parse_error, term()} | {lex_error, term()} | {ok, tuple()}.
 parsetree(JPath) ->
-    ?debugFmt(?MODULE_STRING ++ ":parsetree_with_tokens ===> ~nJPath: ~p~n", [JPath]),
+   ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nJPath: ~p~n", [JPath]),
    case parsetree_with_tokens(JPath) of
        {ok, {ParseTree, _Tokens}} ->
-            ?debugFmt(?MODULE_STRING ++ ":parsetree_with_tokens ===> ~nParseTree: ~p~nTokens: ~p~n", [ParseTree, _Tokens]),
+           ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nParseTree: ~p~nTokens: ~s~n", [ParseTree, _Tokens]),
            {ok, ParseTree};
        Error -> Error
    end.
