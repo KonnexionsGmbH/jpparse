@@ -84,8 +84,8 @@ flat(Other) -> Other.
 parsetree(JPath) ->
    ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nJPath: ~p~n", [JPath]),
    case parsetree_with_tokens(JPath) of
-       {ok, {ParseTree, _Tokens}} ->
-           ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nParseTree: ~p~nTokens: ~s~n", [ParseTree, _Tokens]),
+       {ok, {ParseTree, _Tokens} = _RT} ->
+           ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nRT: ~p~n", [RT]),
            {ok, ParseTree};
        Error -> Error
    end.
