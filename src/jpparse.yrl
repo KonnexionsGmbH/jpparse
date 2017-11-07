@@ -57,9 +57,6 @@ Erlang code.
 % parser and compiler interface
 -export([parsetree/1, parsetree_with_tokens/1]).
 
-% -define(NODEBUG, true).
--include_lib("eunit/include/eunit.hrl").
-
 %%-----------------------------------------------------------------------------
 %%                          parser helper functions
 %%-----------------------------------------------------------------------------
@@ -82,11 +79,8 @@ flat(Other) -> Other.
 -spec parsetree(binary()|list()) ->
     {parse_error, term()} | {lex_error, term()} | {ok, tuple()}.
 parsetree(JPath) ->
-   ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nJPath: ~p~n", [JPath]),
    case parsetree_with_tokens(JPath) of
-       {ok, {ParseTree, _Tokens} = _RT} ->
-           ?debugFmt(?MODULE_STRING ++ ":parsetree ===> ~nRT: ~p~n", [_RT]),
-           {ok, ParseTree};
+       {ok, {ParseTree, _Tokens}} -> {ok, ParseTree};
        Error -> Error
    end.
 
