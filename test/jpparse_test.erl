@@ -31,14 +31,14 @@ test_parse(N, ShowParseTree, [{Test,Target}|Tests]) ->
         {ok,T,E} -> {T,E};
         {error, Error} ->
             ?debugFmt("Tokenize Error ~p", [Error]),
-            ?assertEqual(ok, tokenize_error)
+            throw(tokenize_error)
     end,
     PTree = case t_parse(Tokens) of
         {ok, PT} -> PT;
         {error, {Line, PError}} ->
             ?debugFmt("Parse Error at ~p : ~s", [Line, PError]),
             ?debugFmt("Tokens ~p:~p", [EndLine,Tokens]),
-            ?assertEqual(ok, parsing_error)
+            throw(parsing_error)
     end,
     ?assertEqual(Target, PTree),
     if ShowParseTree -> ?debugFmt("~p", [PTree]); true -> ok end,
@@ -47,7 +47,7 @@ test_parse(N, ShowParseTree, [{Test,Target}|Tests]) ->
         {error, FError} ->
             ?debugFmt("Folding Error : ~p", [FError]),
             ?debugFmt("ParseTree :~p", [PTree]),
-            ?assertEqual(ok, fold_error)
+            throw(fold_error)
     end,
     ?assertEqual(re:replace(Test, "[[:space:]]*", "", [global,{return,list}]),
                  binary_to_list(FoldTest)),
