@@ -1,4 +1,6 @@
-# JPParse [![Build Status](https://travis-ci.org/K2InformaticsGmbH/jpparse.svg?branch=rebar3)](https://travis-ci.org/K2InformaticsGmbH/jpparse)
+# JPParse 
+
+[![Build Status](https://travis-ci.org/K2InformaticsGmbH/jpparse.svg?branch=rebar3)](https://travis-ci.org/K2InformaticsGmbH/jpparse) [![Coverage Status](https://coveralls.io/repos/github/K2InformaticsGmbH/jpparse/badge.svg?branch=master)](https://coveralls.io/github/K2InformaticsGmbH/jpparse?branch=master)
 
 ## Introduction:
 
