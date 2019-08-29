@@ -1,6 +1,11 @@
 # JPParse 
 
-[![Build Status](https://travis-ci.org/K2InformaticsGmbH/jpparse.svg?branch=rebar3)](https://travis-ci.org/K2InformaticsGmbH/jpparse) [![Coverage Status](https://coveralls.io/repos/github/K2InformaticsGmbH/jpparse/badge.svg?branch=master)](https://coveralls.io/github/K2InformaticsGmbH/jpparse?branch=master)
+![Travis (.org)](https://img.shields.io/travis/K2InformaticsGmbH/jpparse.svg)
+![Coveralls github](https://img.shields.io/coveralls/github/K2InformaticsGmbH/jpparse.svg)
+![GitHub](https://img.shields.io/github/license/K2InformaticsGmbH/jpparse.svg)
+![GitHub release](https://img.shields.io/github/release/K2InformaticsGmbH/jpparse.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/K2InformaticsGmbH/jpparse.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/K2InformaticsGmbH/jpparse/1.3.0.svg)
 
 ## Introduction:
 
