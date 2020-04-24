@@ -7,7 +7,7 @@
             stdlib
         ]},
         {licenses, ["Apache-2.0"]},
-	{links, [{"GitHub", "https://github.com/K2informaticsGmbH/jpparse"}]},
+        {links, [{"GitHub", "https://github.com/K2informaticsGmbH/jpparse"}]},
         {modules, [
             jpparse
         ]}
