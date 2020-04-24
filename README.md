@@ -1,11 +1,11 @@
 # JPParse 
 
-![Travis (.org)](https://img.shields.io/travis/K2InformaticsGmbH/jpparse.svg)
-![Coveralls github](https://img.shields.io/coveralls/github/K2InformaticsGmbH/jpparse.svg)
-![GitHub](https://img.shields.io/github/license/K2InformaticsGmbH/jpparse.svg)
-![GitHub release](https://img.shields.io/github/release/K2InformaticsGmbH/jpparse.svg)
-![GitHub Release Date](https://img.shields.io/github/release-date/K2InformaticsGmbH/jpparse.svg)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/K2InformaticsGmbH/jpparse/1.3.0.svg)
+![Travis (.org)](https://img.shields.io/travis/KonnexionsGmbH/jpparse.svg)
+![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/jpparse.svg)
+![GitHub](https://img.shields.io/github/license/KonnexionsGmbH/jpparse.svg)
+![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/jpparse.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/KonnexionsGmbH/jpparse.svg)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/KonnexionsGmbH/jpparse/1.3.0.svg)
 
 ## Introduction:
 
@@ -106,7 +106,7 @@ path expression | parsed form
 `<<"a:f(y(p,q),x):c">>` | `{':',<<"c">>,{':',{'fun',<<"f">>,[{'fun',<<"y">>,[<<"p">>,<<"q">>]<<"x">>]},<<"a">>}}`
 `<<"a:b[]{f(x:y)}:c">>` | `{':',<<"c">>,{'{}',{'[]',{':',<<"b">>,<<"a">>},[]},[{'fun',<<"f">>,[{':',<<"y">>,<<"x">>}]}]}}`
 
-[more examples](https://github.com/k2informatics/jpparse/blob/master/test/test.txt)
+[more examples](https://github.com/KonnexionsGmbH/jpparse/blob/master/test/test.txt)
 
 ### Example Usage
 
