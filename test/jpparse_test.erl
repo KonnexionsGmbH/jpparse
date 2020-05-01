@@ -68,7 +68,10 @@ test_parse(N, ShowParseTree, [{Test, Target} | Tests]) ->
         ?debugFmt("ParseTree :~p", [PTree]),
         throw(fold_error)
     end,
-  ?assertEqual(re:replace(Test, "[[:space:]]*", "", [global, {return, list}]), binary_to_list(FoldTest)),
+  ?assertEqual(
+    re:replace(Test, "[[:space:]]*", "", [global, {return, list}]),
+    binary_to_list(FoldTest)
+  ),
   test_parse(N + 1, ShowParseTree, Tests).
 
 
