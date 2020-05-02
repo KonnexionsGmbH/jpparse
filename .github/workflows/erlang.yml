@@ -20,7 +20,7 @@ jobs:
     - name: Compile
       run: rebar3 compile
     - name: Check formatting
-      run: rebar3 steamroll --check
+      run: DEBUG=1 rebar3 steamroll --check
     - name: Run tests
       run: rebar3 eunit
     - name: Run cover
