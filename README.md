@@ -1,7 +1,7 @@
 # JPParse 
 
 ![build](https://github.com/KonnexionsGmbH/jpparse/workflows/Erlang%20CI/badge.svg)
-![Hex.pm](https://img.shields.io/hexpm/v/lfe.svg)
+![Hex.pm](https://img.shields.io/hexpm/v/jpparse.svg)
 ![Coveralls github](https://img.shields.io/coveralls/github/KonnexionsGmbH/jpparse.svg)
 ![GitHub](https://img.shields.io/github/license/KonnexionsGmbH/jpparse.svg)
 ![GitHub release](https://img.shields.io/github/release/KonnexionsGmbH/jpparse.svg)
