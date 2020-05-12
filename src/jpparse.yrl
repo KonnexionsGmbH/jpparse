@@ -1,8 +1,6 @@
 %% -*- erlang -*-
-Header "%% Copyright (C) K2 Informatics GmbH"
-"%% @private"
-"%% @Author Bikram Chatterjee"
-"%% @Email chatterjee@bluewin.ch".
+Header "%% Copyright (C) Konnexions GmbH"
+"%% @Email info@konnexions.ch".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
